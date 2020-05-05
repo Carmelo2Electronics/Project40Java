@@ -52,6 +52,10 @@ class MarcoPrincipal extends JFrame implements ActionListener{
 			gpio=new GPIO(banderaSO, "Windows");
 		}
 		
+		gpio.GPIOlow(0);		
+		gpio.GPIOlow(1);
+		gpio.GPIOlow(2);
+		
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);			//esto es para detener la libreria Pi4J
 		setTitle("MAIN");
 		setResizable(false);
@@ -78,9 +82,9 @@ class MarcoPrincipal extends JFrame implements ActionListener{
 	    });
 	}	
 	public void operacionCierre() {
-		gpio.GPIOhigh(0);						// stop all GPIO activity/threads by shutting down the GPIO controller
-		gpio.GPIOhigh(1);
-		gpio.GPIOhigh(2);
+		gpio.GPIOlow(0);		
+		gpio.GPIOlow(1);
+		gpio.GPIOlow(2);
 		gpio.OffGpioController();	
 		dispose();
 		System.exit(0);	
@@ -118,7 +122,7 @@ class MarcoGPIO extends JFrame{
 		this.pin=pin;	
 		
 		nameUserAndPin=new NameUserAndPin(pin);		
-		gpio.GPIOhigh(pin);
+		gpio.GPIOlow(pin);
 		
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		setTitle(nameUserAndPin.getNameUser() + " " + nameUserAndPin.getNameGPIO() + " ");	
@@ -136,7 +140,7 @@ class MarcoGPIO extends JFrame{
 	    });
 	}	
 	public void exitGPIO() {	
-		gpio.GPIOhigh(pin);		
+		gpio.GPIOlow(pin);		
 		btnGPIO.setEnabled(true);
 		dispose();
 	}
@@ -209,7 +213,7 @@ class PanelGPIO extends JPanel implements ActionListener, Runnable {
 		CONFIGUREbtn.setEnabled(true);				//activo boton CONFIGURE
 		LIGHTbtn.setEnabled(true);					//activo boton LIGHTbtn
 
-		gpio.GPIOhigh(pin);
+		gpio.GPIOlow(pin);
 		PILOTObtn.setBackground(Color.BLACK);
 	}
 	public void actionPerformed(ActionEvent e) {
@@ -269,11 +273,11 @@ class PanelGPIO extends JPanel implements ActionListener, Runnable {
 		if(e.getSource()==LIGHTbtn) {	
 			if(banEncApaLed1==true) {			
 				PILOTObtn.setBackground(Color.WHITE);
-				gpio.GPIOlow(pin);
+				gpio.GPIOhigh(pin);
 			}
 			else{
 				PILOTObtn.setBackground(Color.BLACK);
-				gpio.GPIOhigh(pin);
+				gpio.GPIOlow(pin);
 			}
 			banEncApaLed1=!banEncApaLed1;			
 		}
@@ -330,7 +334,7 @@ class PanelGPIO extends JPanel implements ActionListener, Runnable {
 
 //----------------
 	public void run() {
-		gpio.GPIOhigh(pin);	
+		gpio.GPIOlow(pin);	
 		PILOTObtn.setBackground(Color.BLACK);
 					
 		for(cicloNumero=1; cicloNumero<=numeroDeCiclos; cicloNumero++) { 			
@@ -339,14 +343,14 @@ class PanelGPIO extends JPanel implements ActionListener, Runnable {
 			}		
 			PILOTObtn.setBackground(Color.WHITE);
 			try {
-					gpio.GPIOlow(pin);
+					gpio.GPIOhigh(pin);
 					Thread.sleep(cicloTiempoON);					
 				} catch (InterruptedException e) {						
 					e.printStackTrace();
 				}	
 				PILOTObtn.setBackground(Color.BLACK);
 			try {
-					gpio.GPIOhigh(pin);
+					gpio.GPIOlow(pin);
 					Thread.sleep(cicloTiempoOFF);
 				} catch (InterruptedException e) {
 						e.printStackTrace();
@@ -370,7 +374,7 @@ class PanelGPIO extends JPanel implements ActionListener, Runnable {
 		STARTbtn.setBackground(null);
 		DELAYbtn.setBackground(null);
 		PILOTObtn.setBackground(Color.BLACK);	
-		gpio.GPIOhigh(pin);
+		gpio.GPIOlow(pin);
 	}
 //----------------		
 }
